@@ -44,5 +44,13 @@ ok ! Simpath::has_one_route(
     {mate => {"A" => "D", C => undef, D => "A"}},
     "C" => "A",
 ), "Route isn't terminated.";
+ok ! Simpath::has_one_route(
+    {mate => {}},
+    "C" => "A",
+), "Has no route.";
+
+is Simpath::node_id(
+    {mate => {"A" => "D", C => undef, D => "A"}}
+), "A-D	C-	D-A", "Route isn't terminated.";
 
 done_testing;

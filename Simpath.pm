@@ -59,35 +59,90 @@ sub high_node($$) {
 
 sub has_one_route($$$) {
     my ($node, $start_grid_node, $end_grid_node) = @_;
+
+    my $has_route;
     for (keys %{$node->{mate}}) {
         if ($_ eq $start_grid_node) {
             $node->{mate}{$_} eq $end_grid_node or return;
+            $has_route = 1;
             next;
         }
         if ($_ eq $end_grid_node) {
             $node->{mate}{$_} eq $start_grid_node or return;
+            $has_route = 1;
             next;
         }
         defined $node->{mate}{$_} and return; # Mustn't contain unwanted routes
     }
-    return 1;
+    return $has_route;
+}
+
+sub node_id($) {
+    my $node = shift;
+    my $mate = $node->{mate};
+    join "\t", map {"$_-" . ($mate->{$_} // '')} sort keys %$mate;
 }
 
 sub solve($$) {
-    my ($width, $height) = @_;
+    my ($col_width, $col_height) = @_;
+    my $width = $col_width + 1;
+    my $height = $col_height + 1;
 
+    my $start = "0,0";
+    my $goal = sprintf "%d,%d", $width - 1, $height - 1;
     my @grid_edges = grid_edges $width, $height;
+    my %route_left;
+    for (@grid_edges) {
+        $route_left{$_}++ for @$_;
+    }
 
-    my @active_nodes = ({mate => {"0,0" => "0,0"}});
+    my $top_node = {mate => {}, low => undef, high => undef};
+    my @active_nodes = ($top_node);
     for my $grid_edge (@grid_edges) {
-        my @next_nodes;
+        my @done_grid_nodes;
+        for (@$grid_edge) {
+            --$route_left{$_} or push @done_grid_nodes, $_;
+        }
+
+        my %next_nodes_map;
         for my $node (@active_nodes) {
-            # calc low node
+            # calc low and high node
             my $low_node = low_node $node, $grid_edge;
             my $high_node = high_node $node, $grid_edge;
+
+            # free used mate
+            delete $node->{mate};
+
+            # delete mate which isn't frontier
+            my $child_node = sub {
+                my $new_node = shift;
+                defined $new_node or return undef;
+
+                my $new_mate = $new_node->{mate};
+                for (@done_grid_nodes) {
+                    if ($_ eq $start || $_ eq $goal) {
+                        return undef unless defined $new_mate->{$_} &&
+                                            $new_mate->{$_} ne $_;
+                    } elsif (defined $new_mate->{$_} &&
+                        $new_mate->{$_} ne $_
+                    ) {
+                        return undef; # won't be connected forever
+                    }
+
+                    delete $new_node->{mate}{$_};
+                }
+
+                return 1 if has_one_route $new_node, $start => $goal;
+
+                $next_nodes_map{node_id $new_node} //= $new_node;
+            };
+            $node->{low} = $child_node->($low_node);
+            $node->{high} = $child_node->($high_node);
         }
-        @active_nodes = @next_nodes;
+        @active_nodes = values %next_nodes_map;
     }
+
+    return $top_node;
 }
 
 1;
