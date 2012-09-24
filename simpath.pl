@@ -6,8 +6,8 @@ sub count($); sub count($) {
     my $node = shift;
     return 0 unless $node;
     return 1 unless ref $node;
-    count($node->{low}) + count($node->{high});
+    $node->{count} //= count($node->{low}) + count($node->{high});
 }
 
-my $zdd = solve(6, 6);
+my $zdd = solve(9, 9);
 print +(count $zdd), "\n";
