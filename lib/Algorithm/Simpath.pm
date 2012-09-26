@@ -8,11 +8,7 @@ our @EXPORT = qw(solve);
 sub low_node($$) {
     my ($node, $grid_edge) = @_;
 
-    my %mate = %{$node->{mate}};
-    my $next_grid_node = $grid_edge->[1];
-    $mate{$next_grid_node} = $next_grid_node unless exists $mate{$next_grid_node};
-
-    {mate => \%mate};
+    {mate => $node->{mate}};
 }
 
 sub high_node($$) {
