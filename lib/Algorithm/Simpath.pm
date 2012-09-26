@@ -5,22 +5,6 @@ our $VERSION = '0.01';
 use Exporter qw(import);
 our @EXPORT = qw(solve);
 
-sub grid_edges($$) {
-    my ($width, $height) = @_;
-
-    my @edges;
-    for my $n (0 .. $width + $height - 1) {
-        for my $x (0 .. $n) {
-            my $y = $n - $x;
-            $x < $width && $y < $height or next;
-            push @edges, ["$x,$y", ($x + 1) . ",$y"] if $x + 1 < $width;
-            push @edges, ["$x,$y", "$x," . ($y + 1)] if $y + 1 < $height;
-        }
-    }
-
-    @edges;
-}
-
 sub low_node($$) {
     my ($node, $grid_edge) = @_;
 
@@ -84,14 +68,12 @@ sub node_id($) {
     join "\t", map {"$_-" . ($mate->{$_} // '')} sort keys %$mate;
 }
 
-sub solve($$) {
-    my ($col_width, $col_height) = @_;
-    my $width = $col_width + 1;
-    my $height = $col_height + 1;
+sub solve(@) {
+    my %params = @_;
+    my $start      = delete $params{start} // die "no start";
+    my $goal       = delete $params{goal}  // die "no goal";
+    my @grid_edges = @{delete $params{edges} // []};
 
-    my $start = "0,0";
-    my $goal = sprintf "%d,%d", $width - 1, $height - 1;
-    my @grid_edges = grid_edges $width, $height;
     my %route_left;
     for (@grid_edges) {
         $route_left{$_}++ for @$_;
