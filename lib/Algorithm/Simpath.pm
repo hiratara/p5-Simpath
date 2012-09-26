@@ -1,6 +1,7 @@
-package Simpath;
+package Algorithm::Simpath;
 use strict;
 use warnings;
+our $VERSION = '0.01';
 use Exporter qw(import);
 our @EXPORT = qw(solve);
 
@@ -146,3 +147,29 @@ sub solve($$) {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Algorithm::Simpath -
+
+=head1 SYNOPSIS
+
+  use Algorithm::Simpath;
+
+=head1 DESCRIPTION
+
+Algorithm::Simpath is
+
+=head1 AUTHOR
+
+hiratara E<lt>hiratara {at} cpan.orgE<gt>
+
+=head1 SEE ALSO
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

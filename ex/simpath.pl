@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Simpath;
+use Algorithm::Simpath;
 
 sub count($); sub count($) {
     my $node = shift;
