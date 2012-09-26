@@ -53,7 +53,7 @@ sub has_one_route($$$) {
             $has_route = 1;
             next;
         }
-        defined $node->{mate}{$_} and return; # Mustn't contain unwanted routes
+        return; # Mustn't contain unwanted routes
     }
     return $has_route;
 }
