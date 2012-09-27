@@ -43,17 +43,18 @@ sub has_one_route($$$) {
 
     my $has_route;
     for (keys %{$node->{mate}}) {
+        my $target = $node->{mate}{$_};
         if ($_ eq $start_grid_node) {
-            $node->{mate}{$_} eq $end_grid_node or return;
+            defined $target && $target eq $end_grid_node or return;
             $has_route = 1;
             next;
         }
         if ($_ eq $end_grid_node) {
-            $node->{mate}{$_} eq $start_grid_node or return;
+            defined $target && $target eq $start_grid_node or return;
             $has_route = 1;
             next;
         }
-        return if defined $node->{mate}->{$_}; # Mustn't contain unwanted routes
+        return if defined $target; # Mustn't contain unwanted routes
     }
     return $has_route;
 }
