@@ -16,7 +16,7 @@ is_deeply Algorithm::Simpath::high_node(
 ), {mate => {A => "C", B => undef, C => "A"}};
 is_deeply Algorithm::Simpath::low_node(
     {mate => {A => "B", B => "A",}}, ["B", "C"]
-), {mate => {A => "B", B => "A", C => "C"}};
+), {mate => {A => "B", B => "A", }};
 
 is_deeply Algorithm::Simpath::high_node(
     {mate => {A => undef, B => "D", C => undef, D => "B"}}, ["B", "D"]
@@ -37,7 +37,7 @@ ok Algorithm::Simpath::has_one_route(
     "A" => "D",
 );
 ok ! Algorithm::Simpath::has_one_route(
-    {mate => {"A" => "B", B => "A", D => "D"}},
+    {mate => {"A" => "B", B => "A", C => "D", D => "C"}},
     "A" => "B",
 ), "It contains unwanted routes.";
 ok ! Algorithm::Simpath::has_one_route(
