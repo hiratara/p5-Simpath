@@ -16,7 +16,7 @@ sub count($); sub count($) {
         goal  => 'C',
         edges => [[qw(A B)], [qw(C A)], [qw(D A)], [qw(B D)], [qw(B C)], [qw(C D)]],
     );
-    is +(count $zdd), 5;
+    is +($zdd->count), 5;
 }
 
 {
@@ -25,7 +25,7 @@ sub count($); sub count($) {
         goal  => 'C',
         edges => [[qw(A B)], [qw(B C)], [qw(C A)], [qw(D A)], [qw(C D)], [qw(B D)]],
     );
-    is +(count $zdd), 5;
+    is +($zdd->count), 5;
 }
 
 done_testing;

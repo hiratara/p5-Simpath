@@ -122,7 +122,23 @@ sub solve(@) {
         @active_nodes = values %next_nodes_map;
     }
 
-    return $top_node;
+    bless {node => $top_node} => __PACKAGE__ . "::Zdd";
+}
+
+package Algorithm::Simpath::Zdd;
+use strict;
+use warnings;
+
+sub _count($); sub _count($) {
+    my $node = shift;
+    return 0 unless $node;
+    return 1 unless ref $node;
+    $node->{count} //= _count($node->{low}) + _count($node->{high});
+}
+
+sub count {
+    my $self = shift;
+    _count($self->{node});
 }
 
 1;
