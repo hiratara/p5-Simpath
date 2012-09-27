@@ -129,11 +129,31 @@ package Algorithm::Simpath::Zdd;
 use strict;
 use warnings;
 
-sub _count($); sub _count($) {
+sub _count($) {
     my $node = shift;
-    return 0 unless $node;
-    return 1 unless ref $node;
-    $node->{count} //= _count($node->{low}) + _count($node->{high});
+    my $ref_items = {int $node => {node => $node, times => 1}};
+    my $count = 0;
+    while (keys %$ref_items) {
+        my %next_items;
+        for my $item (values %$ref_items) {
+            my $parent_node = $item->{node};
+            for my $child_node ($parent_node->{low}, $parent_node->{high}) {
+                if (! $child_node) {
+                    # Failed nodes. NOP.
+                } elsif(! ref $child_node) {
+                    # Successful nodes!
+                    $count += $item->{times};
+                } else {
+                    # more deeply
+                    my $new_item = $next_items{int $child_node} //= {node => $child_node, times => 0};
+                    $new_item->{times} += $item->{times};
+                }
+            }
+        }
+        $ref_items = \%next_items;
+    }
+
+    return $count;
 }
 
 sub count {
