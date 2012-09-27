@@ -152,6 +152,13 @@ Algorithm::Simpath -
 
   use Algorithm::Simpath;
 
+  my $zdd = solve(
+      start => 'A',
+      goal  => 'C',
+      edges => [[qw(A B)], [qw(B C)], [qw(C A)], [qw(D A)], [qw(C D)], [qw(B D)]],
+  );
+  print $zdd->count, "\n"; # 5
+
 =head1 DESCRIPTION
 
 Algorithm::Simpath is
