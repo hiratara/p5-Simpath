@@ -10,15 +10,16 @@ sub count($); sub count($) {
     $node->{count} //= count($node->{low}) + count($node->{high});
 }
 
-my $zdd = solve(
-    start => 'A',
-    goal  => 'C',
-    edges => [[qw(A B)], [qw(C A)], [qw(D A)], [qw(B D)], [qw(B C)], [qw(C D)]],
-);
-is +(count $zdd), 5;
+{
+    my $zdd = solve(
+        start => 'A',
+        goal  => 'C',
+        edges => [[qw(A B)], [qw(C A)], [qw(D A)], [qw(B D)], [qw(B C)], [qw(C D)]],
+    );
+    is +(count $zdd), 5;
+}
 
-TODO: {
-    local $TODO = "FIXME: Can't count if patthes are ordered randomly.";
+{
     my $zdd = solve(
         start => 'A',
         goal  => 'C',
